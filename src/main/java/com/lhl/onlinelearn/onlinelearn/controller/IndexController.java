@@ -1,9 +1,9 @@
 package com.lhl.onlinelearn.onlinelearn.controller;
 
+import com.lhl.onlinelearn.onlinelearn.aop.LogManage;
 import com.lhl.onlinelearn.onlinelearn.common.enums.IsDelete;
 import com.lhl.onlinelearn.onlinelearn.entity.Collect;
 import com.lhl.onlinelearn.onlinelearn.repository.CollectRepository;
-import com.lhl.onlinelearn.onlinelearn.service.UrlLibraryService;
 import com.lhl.onlinelearn.onlinelearn.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +27,7 @@ public class IndexController  extends BaseController {
     private CollectRepository collectRepository;
 
     @PostMapping("")
+    @LogManage(description = "打开首页")
     public ModelAndView toIndexPage() {
         List<Collect> collectList = collectRepository.findByUserIdAndIsDelete(new Long(1), IsDelete.NO);
         Map data = new HashMap<String,Object>();
@@ -43,11 +44,13 @@ public class IndexController  extends BaseController {
     }
 
     @GetMapping("/getUserCount")
+    @LogManage(description = "取得用户总数")
     public Long getUserCount() {
         return userService.countUser();
     }
 
     @GetMapping("/getCollectCount")
+    @LogManage(description = "取得在线用户")
     public Long getCollectCount() {
         return collectRepository.count();
     }

@@ -5,8 +5,6 @@ import org.apache.shiro.session.UnknownSessionException;
 import org.apache.shiro.session.mgt.eis.AbstractSessionDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.RedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
@@ -39,7 +37,6 @@ public class RedisSessionDao extends AbstractSessionDAO {
 
     @Override // 更新session
     public void update(Session session) throws UnknownSessionException {
-        System.out.println("===============update================");
         if (session == null || session.getId() == null) {
             return;
         }
@@ -49,7 +46,6 @@ public class RedisSessionDao extends AbstractSessionDAO {
 
     @Override // 删除session
     public void delete(Session session) {
-        System.out.println("===============delete================");
         if (null == session) {
             return;
         }
@@ -63,7 +59,6 @@ public class RedisSessionDao extends AbstractSessionDAO {
 
     @Override// 加入session
     protected Serializable doCreate(Session session) {
-        System.out.println("===============doCreate================");
         Serializable sessionId = this.generateSessionId(session);
         this.assignSessionId(session, sessionId);
         redisTemplate.opsForValue().set(SESSION_KEY + session.getId(), session, expireTime, TimeUnit.MILLISECONDS);
@@ -72,7 +67,6 @@ public class RedisSessionDao extends AbstractSessionDAO {
 
     @Override// 读取session
     protected Session doReadSession(Serializable sessionId) {
-        System.out.println("==============doReadSession=================");
         if (sessionId == null) {
             return null;
         }
