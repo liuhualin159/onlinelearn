@@ -3,11 +3,15 @@ package com.lhl.onlinelearn.onlinelearn.controller;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.web.util.SavedRequest;
+import org.apache.shiro.web.util.WebUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 @Controller
@@ -19,7 +23,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    ModelAndView doLogin() {
+    String doLogin(HttpServletRequest request) {
     //添加用户认证信息
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken("1","1");
@@ -28,9 +32,9 @@ public class LoginController {
             subject.login(token);
         }
         catch(Exception e){
-            return new ModelAndView("signin");
+            return "signin";
         }
-
-        return new ModelAndView("/index");
+        SavedRequest savedRequest = WebUtils.getSavedRequest(request);
+        return "redirect://127.0.0.1:9090/" + savedRequest.getRequestUrl();
     }
 }

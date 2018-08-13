@@ -9,22 +9,22 @@
 	addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); }
 </script>
 <!-- Bootstrap Core CSS -->
-<link href="css/bootstrap.min.css" rel='stylesheet' type='text/css' />
+<link href="static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel='stylesheet' type='text/css' />
 <!-- Custom CSS -->
-<link href="css/style.css" rel='stylesheet' type='text/css' />
-<link rel="stylesheet" href="css/morris.css" type="text/css"/>
+<link href="css/style.css" th:href="@{/css/style.css}" rel='stylesheet' type='text/css' />
+<link rel="stylesheet" href="css/morris.css" th:href="@{/css/morris.css}" type="text/css"/>
 <!-- Graph CSS -->
-<link href="css/font-awesome.css" rel="stylesheet"> 
+<link href="css/font-awesome.css" th:href="@{/css/font-awesome.css}" rel="stylesheet">
 <!-- jQuery -->
-<script src="js/jquery-2.1.4.min.js"></script>
+<script src="js/jquery-2.1.4.min.js" th:src="@{/js/jquery-2.1.4.min.js}" ></script>
 <!-- //jQuery -->
 <link href='http://fonts.googleapis.com/css?family=Roboto:700,500,300,100italic,100,400' rel='stylesheet' type='text/css'/>
 <link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
 <!-- lined-icons -->
-<link rel="stylesheet" href="css/icon-font.min.css" type='text/css' />
-<link href="css/base.css" rel="stylesheet">
-<link href="css/index.css" rel="stylesheet">
-<link href="css/m.css" rel="stylesheet">
+<link rel="stylesheet" href="css/icon-font.min.css" th:href="@{/css/icon-font.min.css}" type='text/css' />
+<link href="css/base.css" th:href="@{/css/base.css}" rel="stylesheet">
+<link href="css/index.css" th:href="@{/css/index.css}" rel="stylesheet">
+<link href="css/morris.css" th:href="@{/css/morris.css}" rel="stylesheet">
 <!-- //lined-icons -->
 </head> 
 <body>
@@ -206,7 +206,7 @@
 										<ul class="dropdown-menu drp-mnu">
 											<li> <a href="#"><i class="fa fa-cog"></i> Settings</a> </li> 
 											<li> <a href="#"><i class="fa fa-user"></i> Profile</a> </li> 
-											<li> <a href="#"><i class="fa fa-sign-out"></i> Logout</a> </li>
+											<li> <a href="#" th:href="@{/logout}"><i class="fa fa-sign-out"></i> Logout</a> </li>
 										</ul>
 									</li>
 								</ul>
@@ -239,7 +239,7 @@
 							</div>
 							<div class="four-text">
 								<h3>当前在线用户</h3>
-								<h4>0</h4>
+								<h4 id="olUserCount">0</h4>
 
 							</div>
 							
@@ -365,14 +365,14 @@
 										});
 							</script>
 <!--js -->
-<script src="js/jquery.nicescroll.js"></script>
-<script src="js/scripts.js"></script>
+<script src="js/jquery.nicescroll.js" th:src="@{/js/jquery.nicescroll.js}" ></script>
+<script src="js/scripts.js" th:src="@{/js/scripts.js}" ></script>
 <!-- Bootstrap Core JavaScript -->
-   <script src="js/bootstrap.min.js"></script>
+   <script src="js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
    <!-- /Bootstrap Core JavaScript -->	   
 <!-- morris JavaScript -->	
-<script src="js/raphael-min.js"></script>
-<script src="js/morris.js"></script>
+<script src="js/raphael-min.js" th:src="@{/js/raphael-min.js}"></script>
+<script src="js/morris.js" th:src="@{/js/morris.js}"></script>
 <script>
 	$(document).ready(function() {
 		//BOX BUTTON SHOW AND CLOSE
@@ -407,6 +407,23 @@
             data:{},
             success: function(response) {
                 $("#collectCount").html(response);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR.responseText);
+                console.log(jqXHR.status);
+                console.log(jqXHR.readyState);
+                console.log(jqXHR.statusText);
+                console.log(textStatus);
+                console.log(errorThrown);
+            }
+        });
+        // 获取在线人数
+        $.ajax({
+            type: "GET",
+            url:"/sessions/count",
+            data:{},
+            success: function(response) {
+                $("#olUserCount").html(response);
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log(jqXHR.responseText);

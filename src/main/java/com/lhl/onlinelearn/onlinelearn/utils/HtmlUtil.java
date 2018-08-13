@@ -92,7 +92,7 @@ public class HtmlUtil {
 
             URL uri = new URL(url);
             InputStream in = uri.openStream();
-            String dirName = "static/temp/";
+            String dirName = "/static/temp/";
             File dirFile = new File(dirName);
             if(!dirFile.isDirectory()){
                 dirFile.mkdir();

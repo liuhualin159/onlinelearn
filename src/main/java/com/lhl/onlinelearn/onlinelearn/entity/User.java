@@ -2,6 +2,8 @@ package com.lhl.onlinelearn.onlinelearn.entity;
 
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 
 /**
@@ -16,10 +18,13 @@ public class User extends BaseEntity implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Long id;
+	@NotEmpty(message="用户名不能为空！")
 	@Column(nullable = false, unique = true)
 	private String userName;
+	@NotEmpty(message="密码不能为空！")
 	@Column(nullable = false)
 	private String passWord;
+	@Email(message="邮箱格式不正确！")
 	@Column(nullable = false, unique = true)
 	private String email;	
 	@Column(nullable = true)
