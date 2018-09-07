@@ -1,22 +1,27 @@
 package com.lhl.onlinelearn.onlinelearn.controller;
 
+import com.lhl.onlinelearn.onlinelearn.entity.Favorites;
+import com.lhl.onlinelearn.onlinelearn.entity.User;
 import com.lhl.onlinelearn.onlinelearn.repository.CollectRepository;
+import com.lhl.onlinelearn.onlinelearn.repository.FavoritesRepository;
 import com.lhl.onlinelearn.onlinelearn.service.CollectService;
 import com.lhl.onlinelearn.onlinelearn.service.UrlLibraryService;
 import com.lhl.onlinelearn.onlinelearn.common.Constants;
 import com.lhl.onlinelearn.onlinelearn.controller.result.ExceptionMsg;
 import com.lhl.onlinelearn.onlinelearn.controller.result.Response;
 import com.lhl.onlinelearn.onlinelearn.entity.Collect;
+import com.lhl.onlinelearn.onlinelearn.utils.UserUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/collect")
@@ -31,9 +36,18 @@ public class CollectController extends BaseController{
     @Autowired
     private CollectRepository collectRepository;
 
+    /** 收藏夹 */
+    @Autowired
+    private FavoritesRepository favoritesRepository;
+
     @GetMapping("")
     public ModelAndView toCollectPage(HttpServletRequest rest) {
-        return new ModelAndView("collect");
+        // 取得当前登录用户
+        User user = UserUtils.getCurrentUser();
+        Long currentUserId = user.getId();
+        Map data = new HashMap<String,Object>();
+        data.put("favoritesList",favoritesRepository.findByUserId(currentUserId));
+        return new ModelAndView("collect",data);
     }
 
     /**
@@ -66,8 +80,10 @@ public class CollectController extends BaseController{
             if(StringUtils.isBlank(collect.getLogoUrl()) || collect.getLogoUrl().length()>300){
                 collect.setLogoUrl(Constants.BASE_PATH + Constants.default_logo);
             }
-            //TODO: 用户ID
-            collect.setUserId(Long.valueOf(1));
+            // 取得当前登录用户
+            User user = UserUtils.getCurrentUser();
+            Long currentUserId = user.getId();
+            collect.setUserId(currentUserId);
             if(collectService.checkCollect(collect)){
                 Collect exist=collectRepository.findByIdAndUserId(collect.getId(), collect.getUserId());
                 if(collect.getId()==null){
@@ -86,5 +102,26 @@ public class CollectController extends BaseController{
             return result(ExceptionMsg.FAILED);
         }
         return result();
+    }
+
+
+    @GetMapping("/getFavorites")
+    @ResponseBody
+    public List<Map<String,Object>> getFavorites(HttpServletRequest rest) {
+
+        // 取得当前登录用户
+        User user = UserUtils.getCurrentUser();
+        Long currentUserId = user.getId();
+        List<Favorites> result = favoritesRepository.findByUserId(currentUserId);
+        List<Map<String,Object>> favoritesLsit = new ArrayList<>();
+        for (Favorites favorites : result) {
+            Map<String,Object> node = new HashMap<>();
+            node.put("id",favorites.getId());
+            node.put("pId",favorites.getParentId());
+            node.put("name",favorites.getName());
+            node.put("open",true);
+            favoritesLsit.add(node);
+        }
+        return  favoritesLsit;
     }
 }

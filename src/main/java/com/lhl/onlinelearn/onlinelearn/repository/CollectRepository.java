@@ -4,6 +4,7 @@ import com.lhl.onlinelearn.onlinelearn.common.enums.CollectType;
 import com.lhl.onlinelearn.onlinelearn.common.enums.IsDelete;
 import com.lhl.onlinelearn.onlinelearn.entity.Collect;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 import java.util.List;

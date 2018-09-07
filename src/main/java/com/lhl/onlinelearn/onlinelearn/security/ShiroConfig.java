@@ -17,7 +17,7 @@ import java.util.Map;
 public class ShiroConfig {
 
     @Bean
-    public AuthRealm authRealm(){
+    public AuthRealm authRealm() {
         AuthRealm authRealm = new AuthRealm();
         return authRealm;
     }
@@ -33,13 +33,18 @@ public class ShiroConfig {
 
     @Bean
     public ShiroFilterFactoryBean shirFilter(org.apache.shiro.mgt.SecurityManager securityManager) {
-        System.out.println("ShiroConfiguration.shirFilter()");
+
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager((org.apache.shiro.mgt.SecurityManager) securityManager);
         //拦截器.
-        Map<String,String> filterChainDefinitionMap = new LinkedHashMap<String,String>();
+        Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
         // 配置不会被拦截的链接 顺序判断
-        filterChainDefinitionMap.put("/static/**", "anon");
+        filterChainDefinitionMap.put("/favicon.ico", "anon");
+        filterChainDefinitionMap.put("/css/**", "anon");
+        filterChainDefinitionMap.put("/js/**", "anon");
+        filterChainDefinitionMap.put("/fonts/**", "anon");
+        filterChainDefinitionMap.put("/img/**", "anon");
+        filterChainDefinitionMap.put("/images/**", "anon");
         filterChainDefinitionMap.put("/singn/**", "anon");
         filterChainDefinitionMap.put("/singnup/**", "anon");
         //配置退出 过滤器,其中的具体的退出代码Shiro已经替我们实现了
@@ -67,12 +72,12 @@ public class ShiroConfig {
     }
 
     @Bean
-    public RedisSessionDao sessionDAO(){
+    public RedisSessionDao sessionDAO() {
         return new RedisSessionDao();
     }
 
     @Bean
-    public SessionManager sessionManager(SessionDAO sessionDAO){
+    public SessionManager sessionManager(SessionDAO sessionDAO) {
         DefaultWebSessionManager manager = new DefaultWebSessionManager();
         manager.setSessionDAO(sessionDAO);
         manager.setGlobalSessionTimeout(3600000);

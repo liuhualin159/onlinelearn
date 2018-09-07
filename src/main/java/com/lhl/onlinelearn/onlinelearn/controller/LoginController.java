@@ -24,7 +24,7 @@ public class LoginController {
 
     @PostMapping("/login")
     String doLogin(HttpServletRequest request) {
-    //添加用户认证信息
+        //添加用户认证信息
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken("1","1");
         try{
@@ -35,6 +35,6 @@ public class LoginController {
             return "signin";
         }
         SavedRequest savedRequest = WebUtils.getSavedRequest(request);
-        return "redirect://127.0.0.1:9090/" + savedRequest.getRequestUrl();
+        return "redirect://127.0.0.1:9090/" + savedRequest.getRequestUrl().replaceFirst("/","");
     }
 }
